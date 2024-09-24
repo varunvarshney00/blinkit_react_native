@@ -1,0 +1,76 @@
+diff --git a/node_modules/react-native-rolling-bar/lib/typescript/index.d.ts b/node_modules/react-native-rolling-bar/lib/typescript/index.d.ts
+index b0eb64c..6126803 100644
+--- a/node_modules/react-native-rolling-bar/lib/typescript/index.d.ts
++++ b/node_modules/react-native-rolling-bar/lib/typescript/index.d.ts
+@@ -7,6 +7,7 @@ declare type Props = {
+     delayBetween?: number;
+     defaultStyle?: boolean;
+     forceRoll?: boolean;
++    children:ReactNode
+ };
+ declare const RollingBar: React.FC<Props>;
+ export default RollingBar;
+diff --git a/node_modules/react-native-rolling-bar/src/index.tsx b/node_modules/react-native-rolling-bar/src/index.tsx
+index 18a0f5c..b494a49 100644
+--- a/node_modules/react-native-rolling-bar/src/index.tsx
++++ b/node_modules/react-native-rolling-bar/src/index.tsx
+@@ -1,4 +1,4 @@
+-import React, { useState, useEffect, useCallback } from 'react';
++import React, { useState, useEffect, useCallback, ReactNode } from 'react';
+ import { View, Animated, StyleSheet, ViewStyle, StyleProp } from 'react-native';
+ import useInterval from './util/useInterval';
+ 
+@@ -9,6 +9,7 @@ type Props = {
+   delayBetween?: number;
+   defaultStyle?: boolean;
+   forceRoll?: boolean;
++  children: ReactNode; // Added children prop
+ };
+ 
+ const RollingBar: React.FC<Props> = (props) => {
+@@ -46,7 +47,6 @@ const RollingBar: React.FC<Props> = (props) => {
+             duration: 0,
+           }),
+         ]),
+-
+         Animated.parallel([
+           Animated.timing(translateY, {
+             toValue: 0,
+@@ -57,9 +57,7 @@ const RollingBar: React.FC<Props> = (props) => {
+             ...defaultConfig,
+           }),
+         ]),
+-
+         Animated.delay(interval),
+-
+         Animated.parallel([
+           Animated.timing(translateY, {
+             toValue: -10,
+@@ -85,7 +83,7 @@ const RollingBar: React.FC<Props> = (props) => {
+         }),
+       ]).start();
+     }
+-  }, [animationDuration, childrenCount]); // eslint-disable-line react-hooks/exhaustive-deps
++  }, [animationDuration, childrenCount, forceRoll, interval, opacity, translateY]);
+ 
+   useEffect(() => {
+     animate();
+@@ -111,13 +109,11 @@ const RollingBar: React.FC<Props> = (props) => {
+           transform: [{ translateY }, { perspective: 1000 }],
+         }}
+       >
+-        {React.Children.map(children, (child, idx) => {
+-          return (
+-            <View key={`${idx}`} style={visibleIndex !== idx && styles.hideRow}>
+-              <>{child}</>
+-            </View>
+-          );
+-        })}
++        {React.Children.map(children, (child, idx) => (
++          <View key={`${idx}`} style={visibleIndex !== idx && styles.hideRow}>
++            {child}
++          </View>
++        ))}
+       </Animated.View>
+     </View>
+   );
