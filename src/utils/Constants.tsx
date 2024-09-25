@@ -17,7 +17,9 @@ export enum Fonts {
 
 export const lightColors = [
     'rgba(255,255,255,1)',
+    // fully opaque white
     'rgba(255,255,255,0.9)',
+    // a color that's white with a slight transparency
     'rgba(255,255,255,0.7)',
     'rgba(255,255,255,0.6)',
     'rgba(255,255,255,0.5)',
